@@ -1,7 +1,46 @@
-#!/usr/bin/bash
-FILE=$1
-while read NUMBERS;
-do
-	factors=($(factor $NUMBERS))
-	echo "$NUMBERS=$(($NUMBERS/${factors[1]}))*${factors[1]}"
-done < $FILE
+#!/usr/bin/python3
+
+
+import sys
+import time
+
+
+def factorize(number):
+    for j in range(2, int(number**0.5)+1):
+        if number % j == 0:
+            return (j, number//j)
+    return None
+
+
+if __name__ == "__main__":
+
+
+    if len(sys.argv) != 2:
+        print("Usage: factors <file>")
+        exit()
+
+
+    input_file = sys.argv[1]
+
+
+    try:
+        with open(input_file, 'r') as f:
+            liness = f.readlines()
+    except FileNotFoundError:
+        print("File not found")
+        exit()
+
+
+    start_time = time.time()
+
+
+    for line in liness:
+        number = int(line.strip())
+        factors = factorize(number)
+        if factors:
+            print(f"{number}={factors[0]}*{factors[1]}")
+
+
+        if time.time() - start_time > 5:
+            print("Time limit exceeded")
+            exit()
